@@ -1,14 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { SignInResponseDto, SignUpResponseDto } from "../model/auth";
+import { SignInResponseDto, SignUpResponseDto, VerfiyAccountResponseDto } from "../model/auth";
 
 type InitialData = {
     signIn: SignInResponseDto | any,
-    signUp: SignUpResponseDto | any,
+    signUp: SignInResponseDto | any,
+    forgotPassword: VerfiyAccountResponseDto | any,
     toggleValue: number
 };
 const initialState: InitialData = {
     signIn: null,
     signUp: null,
+    forgotPassword: null,
     toggleValue: 0
 };
 const slice = createSlice({
@@ -39,7 +41,18 @@ const slice = createSlice({
         signupFailed: (state, action: PayloadAction<any>) => {
             state.signUp = Array.isArray(action.payload.errors) && action.payload.errors[0].length > 0 ? action.payload.errors[0] : 'Something went wrong. Please try again';
 
-        }
+        },
+        forgetPasswordSuccess: (
+            state,
+            action: PayloadAction<Object>
+        ) => {
+            state.forgotPassword = action.payload;
+
+        },
+        forgetPasswordFailed: (state, action: PayloadAction<any>) => {
+            state.forgotPassword = Array.isArray(action.payload.errors) && action.payload.errors[0].length > 0 ? action.payload.errors[0] : 'Something went wrong. Please try again';
+
+        },
 
 
     }
@@ -47,5 +60,9 @@ const slice = createSlice({
 export const authSlice = slice.reducer;
 export const {
     signinSuccess,
-    signinFailed
+    signinFailed,
+    signupSuccess,
+    signupFailed,
+    forgetPasswordSuccess,
+    forgetPasswordFailed
 } = slice.actions;

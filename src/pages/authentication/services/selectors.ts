@@ -1,4 +1,4 @@
 import { AuthState } from "../model/auth";
-export const authSelected = (state: AuthState) => {
+export const authSelected = (state: any) => {
     return state.authSlice;
 }

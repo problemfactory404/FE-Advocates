@@ -7,53 +7,69 @@ import { styles } from './styles';
 import TextInput from '../../../components/TextInput';
 //services------------------
 import React, { useEffect, useState } from 'react';
-import { AuthState, SignInRequestDto } from '../model/auth';
+import { AuthState, SignInRequestDto, SignUpRequestDto } from '../model/auth';
 
 import * as yup from 'yup';
 import { Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 import { authSelected } from '../services/selectors';
-import { getSignin } from '../services/crudFunctions';
+import { signUpFunction } from '../services/crudFunctions';
 import { router } from 'expo-router';
 
-export const SignIn = ({ navigation }: any) => {
+export const SignUp = ({ navigation }: any) => {
   const dispatch = useDispatch();
 
   const isFirstRender = React.useRef(true);
   const isSessionRender = React.useRef(true);
 
-  const loginData = useSelector<any, any['authSlice']>(authSelected).signIn;
+  const signupData = useSelector<any, any['authSlice']>(authSelected).signUp;
 
-  console.log('Login data is Data is-->', loginData);
+  console.log('Login data is Data is-->', signupData);
 
   useEffect(() => {
     if (!isSessionRender.current) {
-      if (loginData.data.access_token) {
-        router.replace('/(pages)/dashboard');
+      const signUpStatus = signupData
+        ? signupData.status === 'success'
+          ? true
+          : false
+        : false;
+      console.log('checkpoint signup status', signupData);
+      if (signUpStatus) {
+        router.replace('/auth/signin/');
       } else {
         console.log('checkpoint 3');
       }
     }
-  }, [loginData]);
+  }, [signupData]);
+
+  const phoneRegExp =
+    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
   const ValidationSchema = yup.object().shape({
-    salutation: yup.string(),
-    username: yup
+    name: yup
       .string()
       .min(3, 'must be at least 3 characters long')
-      .required('Username is Required'),
+      .required('Name is Required'),
+    phoneNumber: yup.string().matches(phoneRegExp, 'Phone number is not valid'),
+    email: yup
+      .string()
+      .email('Invalid Email')
+      .min(3, 'must be at least 3 characters long')
+      .required('Email is Required'),
     password: yup.string().required('Password is Required'),
   });
 
   const handleFormSubmit = async (values: any) => {
     //setIsLoading(true);
-    const formData: SignInRequestDto = {
-      email: values.username.trim(),
+    const formData: SignUpRequestDto = {
+      name: values.name,
+      email: values.email.trim(),
+      phoneNumber: values.phoneNumber,
       password: values.password,
     };
     isFirstRender.current = false;
     isSessionRender.current = false;
-    dispatch<any>(getSignin(formData));
+    dispatch<any>(signUpFunction(formData));
   };
 
   return (
@@ -64,8 +80,10 @@ export const SignIn = ({ navigation }: any) => {
 
         <Formik
           initialValues={{
-            username: '',
+            name: '',
             password: '',
+            phoneNumber: '',
+            email: '',
           }}
           validationSchema={ValidationSchema}
           onSubmit={handleFormSubmit}>
@@ -80,12 +98,32 @@ export const SignIn = ({ navigation }: any) => {
           }) => (
             <>
               <TextInput
-                label='Username'
+                label='Name'
                 returnKeyType='next'
-                value={values.username}
-                onChangeText={handleChange('username')}
-                error={errors.username ? true : false}
-                errorText={errors.username}
+                value={values.name}
+                onChangeText={handleChange('name')}
+                error={errors.name ? true : false}
+                errorText={errors.name}
+                autoCapitalize='none'
+                mode='outlined'
+              />
+              <TextInput
+                label='Phone Number'
+                returnKeyType='next'
+                value={values.phoneNumber}
+                onChangeText={handleChange('phoneNumber')}
+                error={errors.phoneNumber ? true : false}
+                errorText={errors.phoneNumber}
+                autoCapitalize='none'
+                mode='outlined'
+              />
+              <TextInput
+                label='Email'
+                returnKeyType='next'
+                value={values.email}
+                onChangeText={handleChange('email')}
+                error={errors.email ? true : false}
+                errorText={errors.email}
                 autoCapitalize='none'
                 mode='outlined'
               />
@@ -100,20 +138,13 @@ export const SignIn = ({ navigation }: any) => {
                 mode='outlined'
               />
 
-              <View style={styles.forgotPassword}>
-                <TouchableOpacity
-                  onPress={() => router.replace('/auth/forgotPassword/')}>
-                  <Text style={styles.link}>Forgot Password?</Text>
-                </TouchableOpacity>
-              </View>
               <Button mode='contained' onPress={() => handleSubmit()}>
-                Login
+                Signup
               </Button>
               <View style={styles.row}>
-                <Text style={styles.label}>Don't have an account? </Text>
                 <TouchableOpacity
-                  onPress={() => router.replace('/auth/signup/')}>
-                  <Text style={styles.link}>Sign up</Text>
+                  onPress={() => router.replace('/auth/signin/')}>
+                  <Text style={styles.link}>Go Back To Sign In</Text>
                 </TouchableOpacity>
               </View>
             </>

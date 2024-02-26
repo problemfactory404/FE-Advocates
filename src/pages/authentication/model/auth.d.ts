@@ -13,35 +13,40 @@ export type ChangePasswordRequestDto = {
   confirmNewPassword: String
 }
 export type UserProfileDetailsDto = {
-  id: Number
-  email: String
-  username: String
-  firstName: String
-  lastname: String
-  phoneNumber: String
-  country: String
-  state: String
-  city: String
-  address: String
-  pinCode: String
-  status: String
-  profileUrl: String
+  id: number;
+  name: string;
+  phoneNumber: string;
+  email: string;
+  password: string;
+  updateAt: string;
+  isLoggedIn: boolean;
 }
 export type SignInRequestDto = {
-  username: String
+  email: String
   password: String
 }
 export type SignInResponseDto = {
-  token: String
-  userDetails: UserProfileDetailsDto
+  code: number;
+  status: string;
+  message: string;
+  data: {
+    user: {
+      id: number;
+      name: string;
+      phoneNumber: string;
+      email: string;
+      password: string;
+      updateAt: string;
+      isLoggedIn: boolean;
+    };
+    access_token: string;
+  };
 }
 export type SignUpRequestDto = {
-  email: String
-  username: String
-  password: String
-  confirmPassword: String
-  phoneNumber: String
-  country?: String
+  name: string
+  email: string
+  phoneNumber: string
+  password: string
 }
 export type SignUpResponseDto = {
   id: Number
@@ -82,6 +87,22 @@ export type SigninFacebook = {
   token: String
   userDetails: userDetails
 }
+
+export type VerfiyAccountRequestDto = {
+  phoneNumber: string
+  email: string
+}
+
+export type VerfiyAccountResponseDto = {
+  code: number;
+  status: string;
+  message: string;
+  data: {
+    id: number;
+  };
+}
+
+
 //root state--------------------------------------
 export type AuthState = {
   authSlice: {
@@ -89,7 +110,7 @@ export type AuthState = {
     signup: SignUpResponseDto
     resendVerifyOtp: Authentication
     resendOtp: Authentication
-    forgetPassword: UserProfileDetailsDto
+    forgetPassword: VerfiyAccountResponseDto
     changePassword: UserProfileDetailsDto
     resetPassword: UserProfileDetailsDto
     verifyOtp: VerifyOtpResponseDto
