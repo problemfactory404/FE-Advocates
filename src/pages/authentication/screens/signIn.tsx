@@ -15,8 +15,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { authSelected } from '../services/selectors';
 import { getSignin } from '../services/crudFunctions';
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
+import LanguagePicker from '../../../components/common/languagePicker';
 
 export const SignIn = ({ navigation }: any) => {
+  const { t } = useTranslation();
+
   const dispatch = useDispatch();
 
   const isFirstRender = React.useRef(true);
@@ -25,6 +29,10 @@ export const SignIn = ({ navigation }: any) => {
   const loginData = useSelector<any, any['authSlice']>(authSelected).signIn;
 
   console.log('Login data is Data is-->', loginData);
+  if (typeof t === 'function') {
+    console.log('Language', t);
+  }
+  //console.log('Language', t);
 
   useEffect(() => {
     if (!isSessionRender.current) {
@@ -59,7 +67,9 @@ export const SignIn = ({ navigation }: any) => {
   return (
     <>
       <Background>
+        <LanguagePicker />
         <Logo />
+
         <Header children={'ADVOCATE'} />
 
         <Formik
@@ -80,7 +90,7 @@ export const SignIn = ({ navigation }: any) => {
           }) => (
             <>
               <TextInput
-                label='Username'
+                label={`${t('USERNAME')}`}
                 returnKeyType='next'
                 value={values.username}
                 onChangeText={handleChange('username')}
@@ -90,7 +100,7 @@ export const SignIn = ({ navigation }: any) => {
                 mode='outlined'
               />
               <TextInput
-                label='Password'
+                label={`${t('PASSWORD')}`}
                 returnKeyType='next'
                 value={values.password}
                 onChangeText={handleChange('password')}
@@ -99,21 +109,20 @@ export const SignIn = ({ navigation }: any) => {
                 autoCapitalize='none'
                 mode='outlined'
               />
-
               <View style={styles.forgotPassword}>
                 <TouchableOpacity
                   onPress={() => router.replace('/auth/forgotPassword/')}>
-                  <Text style={styles.link}>Forgot Password?</Text>
+                  <Text style={styles.link}> {`${t('FORGOT_PASSWORD')}`}</Text>
                 </TouchableOpacity>
               </View>
               <Button mode='contained' onPress={() => handleSubmit()}>
-                Login
+                {t('SIGNIN')}
               </Button>
               <View style={styles.row}>
-                <Text style={styles.label}>Don't have an account? </Text>
+                <Text style={styles.label}>{`${t('NO_ACCOUNT')}`} </Text>
                 <TouchableOpacity
                   onPress={() => router.replace('/auth/signup/')}>
-                  <Text style={styles.link}>Sign up</Text>
+                  <Text style={styles.link}>{`${t('SIGNUP')}`}</Text>
                 </TouchableOpacity>
               </View>
             </>
