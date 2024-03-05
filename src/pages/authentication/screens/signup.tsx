@@ -1,4 +1,5 @@
 import { Text, TouchableOpacity, View, Image, StyleSheet } from 'react-native';
+import DropDownPicker from 'react-native-dropdown-picker';
 import Button from '../../../components/Button';
 import Background from '../../../components/Background';
 import Logo from '../../../components/Logo';
@@ -7,7 +8,7 @@ import { styles } from './styles';
 import TextInput from '../../../components/TextInput';
 //services------------------
 import React, { useEffect, useState } from 'react';
-import { AuthState, SignInRequestDto, SignUpRequestDto } from '../model/auth';
+import { SignUpRequestDto } from '../model/auth';
 
 import * as yup from 'yup';
 import { Formik } from 'formik';
@@ -15,9 +16,31 @@ import { useDispatch, useSelector } from 'react-redux';
 import { authSelected } from '../services/selectors';
 import { signUpFunction } from '../services/crudFunctions';
 import { router } from 'expo-router';
+import { Icon, MD3Colors } from 'react-native-paper';
 
-export const SignUp = ({ navigation }: any) => {
+export const SignUp = () => {
   const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState('admin');
+
+  const [items, setItems] = useState([
+    { label: 'ADMIN', value: 'admin' },
+    { label: 'SUBADMIN', value: 'subadmin' },
+    { label: 'USER', value: 'user' },
+  ]);
+
+  const [isFocus, setIsFocus] = useState(false);
+
+  const renderLabel = () => {
+    if (value || isFocus) {
+      return (
+        <Text style={[styles.label, isFocus && { color: 'blue' }]}>
+          Dropdown label
+        </Text>
+      );
+    }
+    return null;
+  };
 
   const isFirstRender = React.useRef(true);
   const isSessionRender = React.useRef(true);
@@ -46,26 +69,36 @@ export const SignUp = ({ navigation }: any) => {
     /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
   const ValidationSchema = yup.object().shape({
-    name: yup
+    first_name: yup
       .string()
       .min(3, 'must be at least 3 characters long')
       .required('Name is Required'),
-    phoneNumber: yup.string().matches(phoneRegExp, 'Phone number is not valid'),
+    last_name: yup.string().min(3, 'must be at least 3 characters long'),
+    phoneNumber: yup
+      .string()
+      .matches(phoneRegExp, 'Phone number is not valid')
+      .required('Phone Number is required'),
     email: yup
       .string()
       .email('Invalid Email')
       .min(3, 'must be at least 3 characters long')
       .required('Email is Required'),
     password: yup.string().required('Password is Required'),
+    // role: yup.string().required('Role is Required'),
   });
 
   const handleFormSubmit = async (values: any) => {
     //setIsLoading(true);
     const formData: SignUpRequestDto = {
-      name: values.name,
+      first_name: values.first_name,
       email: values.email.trim(),
       phoneNumber: values.phoneNumber,
       password: values.password,
+      last_name: values.last_name,
+      role: value,
+      address: '',
+      identity_no: '',
+      vehicle_no: '',
     };
     isFirstRender.current = false;
     isSessionRender.current = false;
@@ -80,10 +113,12 @@ export const SignUp = ({ navigation }: any) => {
 
         <Formik
           initialValues={{
-            name: '',
+            first_name: '',
+            last_name: '',
             password: '',
             phoneNumber: '',
-            email: '',
+            //role: 'ads',
+            email: value,
           }}
           validationSchema={ValidationSchema}
           onSubmit={handleFormSubmit}>
@@ -98,12 +133,22 @@ export const SignUp = ({ navigation }: any) => {
           }) => (
             <>
               <TextInput
-                label='Name'
+                label='First Name'
                 returnKeyType='next'
-                value={values.name}
-                onChangeText={handleChange('name')}
-                error={errors.name ? true : false}
-                errorText={errors.name}
+                value={values.first_name}
+                onChangeText={handleChange('first_name')}
+                error={errors.first_name ? true : false}
+                errorText={errors.first_name}
+                autoCapitalize='none'
+                mode='outlined'
+              />
+              <TextInput
+                label='Last Name'
+                returnKeyType='next'
+                value={values.last_name}
+                onChangeText={handleChange('last_name')}
+                error={errors.last_name ? true : false}
+                errorText={errors.last_name}
                 autoCapitalize='none'
                 mode='outlined'
               />
@@ -138,6 +183,34 @@ export const SignUp = ({ navigation }: any) => {
                 mode='outlined'
               />
 
+              <DropDownPicker
+                style={[style.dropdown, isFocus && { borderColor: 'blue' }]}
+                dropDownContainerStyle={{
+                  backgroundColor: '#fff',
+                  borderColor: 'grey',
+                }}
+                placeholder='Select Role'
+                placeholderStyle={style.placeholderStyle}
+                selectedItemLabelStyle={style.selectedTextStyle}
+                dropDownDirection='BOTTOM'
+                open={open}
+                value={value}
+                items={items}
+                setOpen={setOpen}
+                setValue={setValue}
+                setItems={setItems}
+                onPress={() => setIsFocus(true)}
+                onClose={() => setIsFocus(false)}
+                showArrowIcon={true}
+                ArrowUpIconComponent={({ style }) => (
+                  <Icon source='account-tie' color={'grey'} size={25} />
+                )}
+                ArrowDownIconComponent={({ style }) => (
+                  <Icon source='account-tie' color={'grey'} size={25} />
+                )}
+              />
+              <Text></Text>
+
               <Button mode='contained' onPress={() => handleSubmit()}>
                 Signup
               </Button>
@@ -156,14 +229,41 @@ export const SignUp = ({ navigation }: any) => {
 };
 
 const style = StyleSheet.create({
-  image: {
-    width: 60,
-    height: 60,
+  container: {
+    backgroundColor: 'white',
+    padding: 16,
   },
-  header: {
-    fontSize: 24,
-    marginLeft: 20,
-    color: '#fff',
-    fontWeight: 'bold',
+  dropdown: {
+    height: 50,
+    borderColor: 'gray',
+    borderWidth: 0.5,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+  },
+  icon: {
+    marginRight: 5,
+  },
+  label: {
+    position: 'absolute',
+    backgroundColor: 'white',
+    left: 22,
+    top: 8,
+    zIndex: 999,
+    paddingHorizontal: 8,
+    fontSize: 14,
+  },
+  placeholderStyle: {
+    fontSize: 16,
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 16,
   },
 });

@@ -43,24 +43,40 @@ export type SignInResponseDto = {
   };
 }
 export type SignUpRequestDto = {
-  name: string
+  first_name: string;
+  last_name: string;
   email: string
   phoneNumber: string
   password: string
+  role: string;
+  address: string;
+  identity_no: string;
+  vehicle_no: string;
 }
+
+export type SignUpResponseData = {
+  first_name: string;
+  last_name: string;
+  phoneNumber: string;
+  email: string;
+  role: string;
+  address: string;
+  identity_no: string;
+  vehicle_no: string;
+  password: string;
+  id: number;
+  created_at: string;
+  update_at: string;
+  updated_by: number;
+  isLoggedIn: boolean;
+  status: string;
+}
+
 export type SignUpResponseDto = {
-  id: Number
-  email: String
-  username: String
-  firstName: String
-  lastName: String
-  phoneNumber: String
-  country: String
-  state: String
-  city: String
-  address: String
-  pinCode: String
-  status: String
+  code: number;
+  status: string;
+  message: string;
+  data: SignUpResponseData;
 }
 export type VerifyOtpRequestDto = {
   email: String
@@ -100,6 +116,12 @@ export type VerfiyAccountResponseDto = {
   data: {
     id: number;
   };
+}
+
+export type VerifyOtpDto = {
+  phoneNumber: string;
+  email: string;
+  otp: string;
 }
 
 
