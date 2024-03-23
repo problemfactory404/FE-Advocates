@@ -1,5 +1,3 @@
-import { Logout } from "../../pages/common/logout";
-
 interface HttpHeaders {
     accept: string;
     "content-type": string
@@ -16,7 +14,6 @@ export interface ApiRequest<REQ> {
 
 function apiResponHandler<REQ, RES>(res: Response, request: ApiRequest<REQ>): Promise<RES> {
     if (request.reqAuthentication && res.status == 401) {
-        Logout("logout");
         return Promise.reject("");
     } else {
         if (!res.ok) {

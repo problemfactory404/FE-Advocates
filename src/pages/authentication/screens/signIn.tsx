@@ -13,15 +13,50 @@ import * as yup from 'yup';
 import { Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 import { authSelected } from '../services/selectors';
-import { getSignin } from '../services/crudFunctions';
+import { getSignin, setReduxToken } from '../services/crudFunctions';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import LanguagePicker from '../../../components/common/languagePicker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  getData,
+  getStorageData,
+  removeData,
+  storeData,
+} from '../../../utils/localStorage/localStorage';
+import { setToken } from '../services/slice';
+import SuccessMessageModal from '../../../components/common/modals';
+import { isTokenExpired } from '../../../utils/tokenChecker';
 
 export const SignIn = ({ navigation }: any) => {
   const { t } = useTranslation();
 
   const dispatch = useDispatch();
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const getTokenAndUse = async () => {
+    try {
+      const token = await getStorageData('token');
+      console.log('MY TOKEN', token);
+      if (token) {
+        // Use token for API requests or other purposes
+        const ttt = isTokenExpired(token);
+        setModalVisible(true);
+
+        setTimeout(() => {
+          dispatch<any>(setReduxToken(token));
+
+          router.replace('/(pages)/dashboard');
+        }, 3000);
+      } else {
+        // Handle case where token is not available
+        console.log('checkpoint 3');
+      }
+    } catch (error) {
+      console.log('Error:', error);
+    }
+  };
+  getTokenAndUse();
 
   const isFirstRender = React.useRef(true);
   const isSessionRender = React.useRef(true);
@@ -37,6 +72,7 @@ export const SignIn = ({ navigation }: any) => {
   useEffect(() => {
     if (!isSessionRender.current) {
       if (loginData.data.access_token) {
+        storeData('token', loginData.data.access_token);
         router.replace('/(pages)/dashboard');
       } else {
         console.log('checkpoint 3');
@@ -129,6 +165,12 @@ export const SignIn = ({ navigation }: any) => {
           )}
         </Formik>
       </Background>
+      {modalVisible ? (
+        <SuccessMessageModal
+          messageTime={3000}
+          messageText={'Successfully Signed In'}
+        />
+      ) : null}
     </>
   );
 };

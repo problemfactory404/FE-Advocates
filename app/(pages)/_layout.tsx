@@ -3,9 +3,13 @@ import React, { useState } from 'react';
 import { Drawer } from 'expo-router/drawer';
 import { DrawerActions } from '@react-navigation/native';
 import { router } from 'expo-router';
+import { theme } from '../../src/theme/theme';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from 'react-native-paper';
 
 const DrawerNavigation = () => {
   const dimensions = useWindowDimensions();
+  const x = theme.colors.background;
   return (
     <Drawer
       screenOptions={{
@@ -13,12 +17,12 @@ const DrawerNavigation = () => {
         drawerType: 'front',
         drawerStyle: {
           width: 200,
-          backgroundColor: 'orange',
+          backgroundColor: theme.colors.background,
         },
         drawerActiveBackgroundColor: 'transparent',
         headerTitle: '',
         headerStyle: {
-          backgroundColor: 'red',
+          backgroundColor: theme.colors.header,
           height: 50,
         },
       }}>
@@ -27,6 +31,12 @@ const DrawerNavigation = () => {
         options={{
           drawerLabel: 'Dashboard',
           title: 'Dashboard',
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name='home' color={color} size={size} />
+          ),
+          unmountOnBlur: true,
+          
+          
         }}
       />
       <Drawer.Screen
@@ -34,6 +44,20 @@ const DrawerNavigation = () => {
         options={{
           drawerLabel: 'Members',
           title: 'Members',
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name='person' color={color} size={size} />
+          ),
+          unmountOnBlur: true,
+        }}
+      />
+      <Drawer.Screen
+        name='logout'
+        options={{
+          drawerLabel: 'Logout',
+          title: 'Logout',
+          drawerIcon: ({ color, size }) => (
+            <Icon source='logout' color={color} size={size} />
+          ),
         }}
       />
     </Drawer>

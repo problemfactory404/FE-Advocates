@@ -5,13 +5,15 @@ type InitialData = {
     signIn: SignInResponseDto | any,
     signUp: SignInResponseDto | any,
     forgotPassword: VerfiyAccountResponseDto | any,
+    token: string | any,
     toggleValue: number
 };
 const initialState: InitialData = {
     signIn: null,
     signUp: null,
     forgotPassword: null,
-    toggleValue: 0
+    toggleValue: 0,
+    token: ""
 };
 const slice = createSlice({
     name: "authSlice",
@@ -53,6 +55,11 @@ const slice = createSlice({
             state.forgotPassword = Array.isArray(action.payload.errors) && action.payload.errors[0].length > 0 ? action.payload.errors[0] : 'Something went wrong. Please try again';
 
         },
+        setToken: (state, action: PayloadAction<any>) => {
+            state.token = action.payload;
+        },
+
+
 
 
     }
@@ -64,5 +71,6 @@ export const {
     signupSuccess,
     signupFailed,
     forgetPasswordSuccess,
-    forgetPasswordFailed
+    forgetPasswordFailed,
+    setToken
 } = slice.actions;

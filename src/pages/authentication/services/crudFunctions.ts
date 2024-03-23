@@ -5,7 +5,8 @@ import {
     signupSuccess,
     signupFailed,
     forgetPasswordSuccess,
-    forgetPasswordFailed
+    forgetPasswordFailed,
+    setToken
 } from "./slice";
 import { signinAPI, signupAPI, forgotpasswordAPI } from "./api";
 import { SignInRequestDto, SignInResponseDto, SignUpRequestDto, VerfiyAccountRequestDto, VerfiyAccountResponseDto, VerifyOtpResponseDto } from "../model/auth";
@@ -35,5 +36,23 @@ export const forgetPasswordFunction = (Data: VerfiyAccountRequestDto): AppThunk 
         dispatch(forgetPasswordSuccess(ApisData));
     } catch (err) {
         dispatch(forgetPasswordFailed(err));
+    }
+}
+
+export const setReduxToken = (token: string): AppThunk => async (dispatch) => {
+    try {
+
+        dispatch(setToken(token));
+    } catch (err) {
+        dispatch(setToken(''));
+    }
+}
+
+export const removeReduxToken = (token: string): AppThunk => async (dispatch) => {
+    try {
+
+        dispatch(setToken(token));
+    } catch (err) {
+        dispatch(setToken(''));
     }
 }

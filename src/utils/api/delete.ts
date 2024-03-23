@@ -1,4 +1,4 @@
-import { Logout } from "../../pages/common/logout";
+
 
 interface HttpHeaders {
     accept: string;
@@ -37,7 +37,6 @@ export const apiDeleteRequest = async <REQ, RES>(request: ApiRequest<REQ>): Prom
 
 function apiResponHandler<REQ, RES>(res: Response, request: ApiRequest<REQ>): Promise<RES> {
     if (request.reqAuthentication && res.status == 401) {
-        Logout("logout");
         return Promise.reject("");
     } else {
         if (!res.ok) {

@@ -6,12 +6,13 @@ import {
 //import logger from "redux-logger";
 import { RootState } from "../utils/type";
 import { authSlice } from "../pages/authentication/services/slice";
+import { memberSlice } from "../pages/members/services/slice";
 
 
 //const middleware = [...getDefaultMiddleware(), logger];
 export const store = configureStore({
   reducer: {
-    authSlice
+    authSlice, memberSlice
   },
 
 });
