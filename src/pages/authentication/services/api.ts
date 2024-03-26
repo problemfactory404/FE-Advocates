@@ -11,7 +11,7 @@ console.log('API LINK', API_URL)
 //API CALLS
 export const signinAPI = (data: SignInRequestDto): Promise<SignInResponseDto> => apiPostRequest({
     reqAuthentication: true,
-    apiUrl: API_URL + 'auth/signin',
+    apiUrl: 'https://beadvocates.onrender.com/' + 'auth/signin',
     data: data,
     content_type: 'application/json',
 });

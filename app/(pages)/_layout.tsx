@@ -35,8 +35,16 @@ const DrawerNavigation = () => {
             <Ionicons name='home' color={color} size={size} />
           ),
           unmountOnBlur: true,
-          
-          
+        }}
+      />
+      <Drawer.Screen
+        name='clients'
+        options={{
+          drawerLabel: 'Clients',
+          title: 'Clients',
+          drawerIcon: ({ color, size }) => (
+            <Icon source='file-account' color={color} size={size} />
+          ),
         }}
       />
       <Drawer.Screen
@@ -45,7 +53,7 @@ const DrawerNavigation = () => {
           drawerLabel: 'Members',
           title: 'Members',
           drawerIcon: ({ color, size }) => (
-            <Ionicons name='person' color={color} size={size} />
+            <Icon source='account-group' color={color} size={size} />
           ),
           unmountOnBlur: true,
         }}
