@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { createClientResponseDto } from "../models/clients";
+import { ClientApResponseDTO, createClientResponseDto } from "../models/clients";
 
 
 type InitialData = {
-    clientsList: any,
+    clientsList: ClientApResponseDTO | any,
     deleteStatus: any,
     addClient: createClientResponseDto | any,
     updateStatus: any,
@@ -12,8 +12,8 @@ type InitialData = {
 const initialState: InitialData = {
     deleteStatus: null,
     updateStatus: null,
-    clientsList: undefined,
-    addClient: undefined
+    clientsList: null,
+    addClient: null
 };
 const slice = createSlice({
     name: "clientSlice",
@@ -47,6 +47,13 @@ const slice = createSlice({
             state.updateStatus = { status: 'error' }
 
         },
+        fetchClientSuccess: (
+            state,
+            action: PayloadAction<any>
+        ) => {
+            state.clientsList = action.payload;
+
+        },
 
 
     }
@@ -56,6 +63,9 @@ export const {
     addClientFailed,
     addClientSuccess,
     setDeleteStatus,
+    fetchClientSuccess,
+    updateClientSuccess,
+    updateClientFailed
 
 
 } = slice.actions;

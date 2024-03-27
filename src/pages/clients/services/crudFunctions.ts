@@ -1,26 +1,31 @@
 import { AppThunk } from "../../../store/store"
-import { createClientDto, createClientResponseDto } from "../models/clients";
-import { addClientAPI} from "./api";
+import { ClientApResponseDTO, createClientDto, createClientResponseDto } from "../models/clients";
+import { addClientAPI, deletClientAPI, fetchClientsAPI, updateClientAPI} from "./api";
 
-import { addClientFailed, addClientSuccess } from "./slice";
+import { addClientFailed, addClientSuccess, fetchClientSuccess, setDeleteStatus, updateClientFailed, updateClientSuccess } from "./slice";
 
-// export const getMembersList = (token: string): AppThunk => async (dispatch) => {
-//     try {
-//         const ApisData: UserListResponse = await fetchUserAPI(token);
-//         dispatch(setMembersList(ApisData));
-//     } catch (err) {
-//         dispatch(setMembersList([]));
-//     }
-// }
+export const getClientsList = (): AppThunk => async (dispatch) => {
+    try {
+        const ApisData: ClientApResponseDTO = await fetchClientsAPI();
+        dispatch(fetchClientSuccess(ApisData));
+    } catch (err) {
+        dispatch(fetchClientSuccess([]));
+    }
+}
 
-// export const deleteMember = (id: string): AppThunk => async (dispatch) => {
-//     try {
-//         const ApisData: any = await deletUserAPI(id);
-//         dispatch(setDeleteStatus(ApisData));
-//     } catch (err) {
-//         dispatch(setDeleteStatus('failed'));
-//     }
-// }
+export const deleteClient = (id: string): AppThunk => async (dispatch) => {
+    try {
+        const ApisData: any = await deletClientAPI(id);
+        dispatch(setDeleteStatus(ApisData));
+    } catch (err) {
+        dispatch(setDeleteStatus({
+            code: -999,
+            status: "failed",
+            message: "Deleted successfully",
+            data: null
+}));
+    }
+}
 
 
 export const addClientFunction = (Data: createClientDto): AppThunk => async (dispatch) => {
@@ -32,12 +37,12 @@ export const addClientFunction = (Data: createClientDto): AppThunk => async (dis
     }
 }
 
-// export const updateMemberFunction = (Data: UpdateMemberDto,id:string): AppThunk => async (dispatch) => {
-//     try {
-//         const ApisData: UpdateMemberResponse = await updateUserAPI(Data,id);
-//         console.log('######', ApisData)
-//         dispatch(updateMemberSuccess(ApisData));
-//     } catch (err) {
-//         dispatch(updateMemberFailed(err));
-//     }
-// }
+export const updateClientFunction = (Data: createClientDto,id:string): AppThunk => async (dispatch) => {
+    try {
+        const ApisData: any = await updateClientAPI(Data,id);
+        console.log('######', ApisData)
+        dispatch(updateClientSuccess(ApisData));
+    } catch (err) {
+        dispatch(updateClientFailed(err));
+    }
+}

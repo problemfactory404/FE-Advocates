@@ -45,6 +45,7 @@ const DrawerNavigation = () => {
           drawerIcon: ({ color, size }) => (
             <Icon source='file-account' color={color} size={size} />
           ),
+          unmountOnBlur: true,
         }}
       />
       <Drawer.Screen

@@ -1,5 +1,6 @@
-import { AddClient } from '../../../src/pages/clients/screens/addClient';
+
+import CLientList from '../../../src/pages/clients/screens/clientList';
 
 export default function Index() {
-  return <AddClient />;
+  return <CLientList />;
 }

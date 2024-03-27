@@ -1,3 +1,3 @@
-export const memberSelected = (state: any) => {
-    return state.memberSlice;
+export const clientSelected = (state: any) => {
+    return state.clientSlice;
 }

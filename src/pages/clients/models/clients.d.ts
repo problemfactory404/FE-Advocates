@@ -37,3 +37,38 @@ export type createClientResponseDto = {
     message: string;
     data: UserData;
 }
+
+
+
+
+type ClientsDTO = {
+    id: number;
+    user_id: number;
+    case_id: number;
+    first_name: string;
+    last_name: string;
+    mobile: string;
+    email: string;
+    role: string;
+    address: string;
+    identity_no: string;
+    vehicle_no: string;
+    created_at: string;
+    updated_at: string;
+    updated_by: number;
+};
+
+type ClientsDataDTO = {
+    users: UserDTO[];
+    page: string;
+    pageSize: string;
+    totalRecords: number;
+    totalPages: number;
+};
+
+type ClientApResponseDTO = {
+    code: number;
+    status: string;
+    message: string;
+    data: UserDataDTO;
+};
